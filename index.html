@@ -225,6 +225,87 @@
             border: 1px solid var(--border-color);
         }
 
+        .algorithm-viz {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .viz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        canvas.algorithm-canvas {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: linear-gradient(135deg, #f0f7ff 0%, #f5fbff 100%);
+            max-width: 100%;
+        }
+
+        .viz-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+
+        .control-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        .control-btn.reset {
+            background: #64748b;
+        }
+
+        .control-btn.reset:hover {
+            background: #475569;
+        }
+
+        .viz-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .stat-box {
+            background: var(--light-bg);
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .stat-box strong {
+            color: var(--primary-color);
+            display: block;
+            font-size: 1.3em;
+        }
+
+        .stat-box small {
+            color: var(--text-light);
+            font-size: 0.85em;
+        }
+
         /* Stats Section */
         .stats {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
@@ -443,14 +524,28 @@
     <!-- Algorithms Section -->
     <section class="algorithms" id="algorithms">
         <div class="container">
-            <h2 class="section-title">Algorithms Implemented</h2>
+            <h2 class="section-title">Algorithms Implemented & Visualized</h2>
 
             <div class="algorithm-item">
-                <h4>1. Nearest Neighbor (NN)</h4>
-                <p>Greedy heuristic that selects the closest unvisited city at each step. Fast but may not be optimal.</p>
-                <div style="margin-top: 20px;">
-                    <canvas id="nnCanvas" width="500" height="200" style="max-width: 100%; border-radius: 8px; background: white; display: block; margin: 0 auto;"></canvas>
+                <h4>1. Nearest Neighbor (NN) - O(n²)</h4>
+                <p>Greedy heuristic that selects the closest unvisited city at each step. Fast but may not be optimal. Click "Play Animation" to watch the algorithm explore the map!</p>
+                
+                <div class="algorithm-viz">
+                    <div class="viz-container">
+                        <canvas id="nnCanvas" class="algorithm-canvas" width="600" height="300"></canvas>
+                        <div class="viz-controls">
+                            <button class="control-btn" onclick="animateNearestNeighbor()">▶ Play Animation</button>
+                            <button class="control-btn reset" onclick="resetNN()">↻ Reset</button>
+                        </div>
+                        <div class="viz-stats">
+                            <div class="stat-box"><strong id="nn-distance">0</strong><small>Total Distance (km)</small></div>
+                            <div class="stat-box"><strong id="nn-time">0ms</strong><small>Execution Time</small></div>
+                            <div class="stat-box"><strong id="nn-cities">12</strong><small>Cities Visited</small></div>
+                            <div class="stat-box"><strong id="nn-status">Ready</strong><small>Status</small></div>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="complexity">
                     <div class="complexity-item"><strong>Time:</strong> O(n²)</div>
                     <div class="complexity-item"><strong>Space:</strong> O(n)</div>
@@ -458,11 +553,25 @@
             </div>
 
             <div class="algorithm-item">
-                <h4>2. Brute Force</h4>
-                <p>Exhaustively examines all possible permutations to guarantee the optimal solution.</p>
-                <div style="margin-top: 20px;">
-                    <canvas id="bfCanvas" width="500" height="200" style="max-width: 100%; border-radius: 8px; background: white; display: block; margin: 0 auto;"></canvas>
+                <h4>2. Brute Force (BF) - O(n!)</h4>
+                <p>Exhaustively examines all possible permutations to guarantee the optimal solution. Watch it explore all paths!</p>
+                
+                <div class="algorithm-viz">
+                    <div class="viz-container">
+                        <canvas id="bfCanvas" class="algorithm-canvas" width="600" height="300"></canvas>
+                        <div class="viz-controls">
+                            <button class="control-btn" onclick="animateBruteForce()">▶ Play Animation</button>
+                            <button class="control-btn reset" onclick="resetBF()">↻ Reset</button>
+                        </div>
+                        <div class="viz-stats">
+                            <div class="stat-box"><strong id="bf-distance">0</strong><small>Best Distance (km)</small></div>
+                            <div class="stat-box"><strong id="bf-time">0ms</strong><small>Execution Time</small></div>
+                            <div class="stat-box"><strong id="bf-paths">0</strong><small>Paths Explored</small></div>
+                            <div class="stat-box"><strong id="bf-status">Ready</strong><small>Status</small></div>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="complexity">
                     <div class="complexity-item"><strong>Time:</strong> O(n!)</div>
                     <div class="complexity-item"><strong>Space:</strong> O(n!)</div>
@@ -470,24 +579,30 @@
             </div>
 
             <div class="algorithm-item">
-                <h4>3. Held-Karp (Dynamic Programming)</h4>
-                <p>Optimal algorithm using dynamic programming with better scalability than brute force.</p>
-                <div style="margin-top: 20px;">
-                    <canvas id="hkCanvas" width="500" height="200" style="max-width: 100%; border-radius: 8px; background: white; display: block; margin: 0 auto;"></canvas>
+                <h4>3. Held-Karp (DP) - O(n²2ⁿ)</h4>
+                <p>Optimal algorithm using dynamic programming with better scalability than brute force. See the optimal solution being built!</p>
+                
+                <div class="algorithm-viz">
+                    <div class="viz-container">
+                        <canvas id="hkCanvas" class="algorithm-canvas" width="600" height="300"></canvas>
+                        <div class="viz-controls">
+                            <button class="control-btn" onclick="animateHeldKarp()">▶ Play Animation</button>
+                            <button class="control-btn reset" onclick="resetHK()">↻ Reset</button>
+                        </div>
+                        <div class="viz-stats">
+                            <div class="stat-box"><strong id="hk-distance">0</strong><small>Optimal Distance (km)</small></div>
+                            <div class="stat-box"><strong id="hk-time">0ms</strong><small>Execution Time</small></div>
+                            <div class="stat-box"><strong id="hk-subsets">0</strong><small>Subsets Computed</small></div>
+                            <div class="stat-box"><strong id="hk-status">Ready</strong><small>Status</small></div>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="complexity">
                     <div class="complexity-item"><strong>Time:</strong> O(n²2^n)</div>
                     <div class="complexity-item"><strong>Space:</strong> O(n2^n)</div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Algorithm Visualization Section -->
-    <section style="background: white; padding: 80px 20px;">
-        <div class="container" style="max-width: 1000px;">
-            <h2 class="section-title">Complexity Comparison</h2>
-            <canvas id="complexityChart" width="800" height="400" style="max-width: 100%; margin-top: 40px;"></canvas>
         </div>
     </section>
 
@@ -585,330 +700,359 @@ pip install -r requirements.txt</div>
     </footer>
 
     <script>
-        // Nearest Neighbor Visualization
-        function drawNearestNeighbor() {
-            const canvas = document.getElementById('nnCanvas');
+        // Global state for animations
+        const state = {
+            cities: [],
+            nnPath: [],
+            bfPath: [],
+            hkPath: [],
+            isAnimating: false
+        };
+
+        // Generate random cities for visualization
+        function generateCities(count = 12) {
+            state.cities = [];
+            for (let i = 0; i < count; i++) {
+                state.cities.push({
+                    x: 50 + Math.random() * 500,
+                    y: 30 + Math.random() * 240,
+                    id: i
+                });
+            }
+            return state.cities;
+        }
+
+        // Calculate distance between two cities
+        function distance(c1, c2) {
+            return Math.hypot(c2.x - c1.x, c2.y - c1.y) * 50; // Scale to km
+        }
+
+        // Draw cities and path on canvas
+        function drawMap(canvas, path, cities, highlightIndex = -1, exploringPaths = []) {
             const ctx = canvas.getContext('2d');
             const width = canvas.width;
             const height = canvas.height;
-            
+
             // Clear canvas
-            ctx.fillStyle = '#f8fafc';
+            ctx.fillStyle = 'linear-gradient(135deg, #f0f7ff 0%, #f5fbff 100%)';
             ctx.fillRect(0, 0, width, height);
-            
-            // Draw title
-            ctx.fillStyle = '#2563eb';
-            ctx.font = 'bold 14px Segoe UI';
-            ctx.fillText('Greedy: Always pick the nearest unvisited city', 10, 25);
-            
-            // Generate random cities
-            const cities = [];
-            for (let i = 0; i < 6; i++) {
-                cities.push({
-                    x: 50 + Math.random() * 400,
-                    y: 50 + Math.random() * 120
-                });
-            }
-            
-            // Simulate nearest neighbor path
-            let current = cities[0];
-            const visited = [0];
-            const path = [current];
-            
-            for (let i = 1; i < cities.length; i++) {
-                let nearest = -1;
-                let minDist = Infinity;
+
+            // Draw exploring paths (faint)
+            ctx.strokeStyle = 'rgba(249, 115, 22, 0.1)';
+            ctx.lineWidth = 1;
+            exploringPaths.forEach(p => {
+                for (let i = 0; i < p.length - 1; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(p[i].x, p[i].y);
+                    ctx.lineTo(p[i + 1].x, p[i + 1].y);
+                    ctx.stroke();
+                }
+            });
+
+            // Draw main path
+            if (path.length > 0) {
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
                 
-                for (let j = 0; j < cities.length; j++) {
-                    if (!visited.includes(j)) {
-                        const dist = Math.hypot(cities[j].x - current.x, cities[j].y - current.y);
+                for (let i = 0; i < path.length - 1; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(path[i].x, path[i].y);
+                    ctx.lineTo(path[i + 1].x, path[i + 1].y);
+                    ctx.stroke();
+                }
+
+                // Close the loop
+                if (path.length > 1) {
+                    ctx.beginPath();
+                    ctx.moveTo(path[path.length - 1].x, path[path.length - 1].y);
+                    ctx.lineTo(path[0].x, path[0].y);
+                    ctx.stroke();
+                }
+            }
+
+            // Draw cities
+            cities.forEach((city, i) => {
+                ctx.fillStyle = i === 0 ? '#ef4444' : '#3b82f6';
+                ctx.beginPath();
+                ctx.arc(city.x, city.y, 8, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Highlight current city
+                if (i === highlightIndex) {
+                    ctx.strokeStyle = '#f59e0b';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.arc(city.x, city.y, 12, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+
+                // City label
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 10px Segoe UI';
+                ctx.textAlign = 'center';
+                ctx.fillText(i, city.x, city.y + 18);
+            });
+
+            // Draw grid lines
+            ctx.strokeStyle = 'rgba(200, 200, 200, 0.1)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < width; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, height);
+                ctx.stroke();
+            }
+            for (let i = 0; i < height; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(width, i);
+                ctx.stroke();
+            }
+        }
+
+        // Nearest Neighbor Animation
+        async function animateNearestNeighbor() {
+            if (state.isAnimating) return;
+            state.isAnimating = true;
+
+            const canvas = document.getElementById('nnCanvas');
+            generateCities(12);
+            state.nnPath = [];
+
+            let current = state.cities[0];
+            state.nnPath.push(current);
+            const visited = new Set([0]);
+            let totalDistance = 0;
+            const startTime = Date.now();
+
+            document.getElementById('nn-status').textContent = 'Animating...';
+
+            while (visited.size < state.cities.length) {
+                let nearest = null;
+                let minDist = Infinity;
+
+                for (let i = 0; i < state.cities.length; i++) {
+                    if (!visited.has(i)) {
+                        const dist = distance(current, state.cities[i]);
                         if (dist < minDist) {
                             minDist = dist;
-                            nearest = j;
+                            nearest = i;
                         }
                     }
                 }
-                
-                visited.push(nearest);
-                current = cities[nearest];
-                path.push(current);
+
+                visited.add(nearest);
+                current = state.cities[nearest];
+                state.nnPath.push(current);
+                totalDistance += minDist;
+
+                drawMap(canvas, state.nnPath, state.cities, nearest);
+                document.getElementById('nn-distance').textContent = Math.round(totalDistance);
+                document.getElementById('nn-cities').textContent = visited.size;
+
+                await new Promise(r => setTimeout(r, 300));
             }
-            
-            // Draw paths
-            ctx.strokeStyle = '#f59e0b';
-            ctx.lineWidth = 2;
-            for (let i = 0; i < path.length; i++) {
-                if (i === 0) ctx.moveTo(path[i].x, path[i].y);
-                else ctx.lineTo(path[i].x, path[i].y);
-            }
-            ctx.lineTo(path[0].x, path[0].y);
-            ctx.stroke();
-            
-            // Draw cities
-            cities.forEach((city, i) => {
-                ctx.fillStyle = i === 0 ? '#10b981' : '#3b82f6';
-                ctx.beginPath();
-                ctx.arc(city.x, city.y, 6, 0, Math.PI * 2);
-                ctx.fill();
-            });
-            
-            // Draw legend
-            ctx.fillStyle = '#10b981';
-            ctx.beginPath();
-            ctx.arc(420, 160, 4, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#666';
-            ctx.font = '12px Segoe UI';
-            ctx.fillText('Start', 430, 165);
+
+            // Close the loop
+            totalDistance += distance(state.nnPath[state.nnPath.length - 1], state.nnPath[0]);
+            const elapsed = Date.now() - startTime;
+
+            document.getElementById('nn-distance').textContent = Math.round(totalDistance);
+            document.getElementById('nn-time').textContent = elapsed + 'ms';
+            document.getElementById('nn-status').textContent = 'Complete!';
+
+            drawMap(canvas, state.nnPath, state.cities);
+            state.isAnimating = false;
         }
-        
-        // Brute Force Visualization
-        function drawBruteForce() {
+
+        function resetNN() {
+            const canvas = document.getElementById('nnCanvas');
+            state.nnPath = [];
+            generateCities(12);
+            drawMap(canvas, [], state.cities);
+            document.getElementById('nn-distance').textContent = '0';
+            document.getElementById('nn-time').textContent = '0ms';
+            document.getElementById('nn-cities').textContent = '12';
+            document.getElementById('nn-status').textContent = 'Ready';
+        }
+
+        // Brute Force Animation
+        async function animateBruteForce() {
+            if (state.isAnimating) return;
+            state.isAnimating = true;
+
             const canvas = document.getElementById('bfCanvas');
-            const ctx = canvas.getContext('2d');
-            const width = canvas.width;
-            const height = canvas.height;
-            
-            ctx.fillStyle = '#f8fafc';
-            ctx.fillRect(0, 0, width, height);
-            
-            ctx.fillStyle = '#2563eb';
-            ctx.font = 'bold 14px Segoe UI';
-            ctx.fillText('Exhaustive: Test all possible permutations (n!)', 10, 25);
-            
-            // Draw tree structure showing permutation search
-            const treeY = 50;
-            const branchSpacing = 60;
-            
-            ctx.strokeStyle = '#cbd5e1';
-            ctx.lineWidth = 1;
-            
-            // Root
-            ctx.fillStyle = '#059669';
-            ctx.beginPath();
-            ctx.arc(250, treeY, 8, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Level 1 branches
-            const level1Positions = [150, 250, 350];
-            level1Positions.forEach(x => {
-                ctx.beginPath();
-                ctx.moveTo(250, treeY + 8);
-                ctx.lineTo(x, treeY + branchSpacing - 8);
-                ctx.stroke();
-                
-                ctx.fillStyle = '#3b82f6';
-                ctx.beginPath();
-                ctx.arc(x, treeY + branchSpacing, 6, 0, Math.PI * 2);
-                ctx.fill();
-            });
-            
-            // Level 2 branches
-            level1Positions.forEach(x => {
-                const y = treeY + branchSpacing;
-                const nextPositions = [x - 40, x + 40];
-                
-                nextPositions.forEach((nextX, idx) => {
-                    if (nextX > 50 && nextX < 450) {
-                        ctx.strokeStyle = '#cbd5e1';
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
-                        ctx.moveTo(x, y + 6);
-                        ctx.lineTo(nextX, y + branchSpacing - 6);
-                        ctx.stroke();
-                        
-                        ctx.fillStyle = '#f59e0b';
-                        ctx.beginPath();
-                        ctx.arc(nextX, y + branchSpacing, 4, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                });
-            });
-            
-            ctx.fillStyle = '#666';
-            ctx.font = '12px Segoe UI';
-            ctx.fillText('Explores n! paths', 180, 185);
-        }
-        
-        // Held-Karp Visualization
-        function drawHeldKarp() {
-            const canvas = document.getElementById('hkCanvas');
-            const ctx = canvas.getContext('2d');
-            const width = canvas.width;
-            const height = canvas.height;
-            
-            ctx.fillStyle = '#f8fafc';
-            ctx.fillRect(0, 0, width, height);
-            
-            ctx.fillStyle = '#2563eb';
-            ctx.font = 'bold 14px Segoe UI';
-            ctx.fillText('Dynamic Programming: Optimal substructure with memoization', 10, 25);
-            
-            // Draw DP table visualization
-            const tableStartX = 50;
-            const tableStartY = 50;
-            const cellSize = 40;
-            const cols = 8;
-            const rows = 3;
-            
-            // Draw grid
-            ctx.strokeStyle = '#e5e7eb';
-            ctx.lineWidth = 1;
-            
-            for (let i = 0; i <= rows; i++) {
-                ctx.beginPath();
-                ctx.moveTo(tableStartX, tableStartY + i * cellSize);
-                ctx.lineTo(tableStartX + cols * cellSize, tableStartY + i * cellSize);
-                ctx.stroke();
-            }
-            
-            for (let j = 0; j <= cols; j++) {
-                ctx.beginPath();
-                ctx.moveTo(tableStartX + j * cellSize, tableStartY);
-                ctx.lineTo(tableStartX + j * cellSize, tableStartY + rows * cellSize);
-                ctx.stroke();
-            }
-            
-            // Fill some cells with gradient effect
-            ctx.fillStyle = 'rgba(37, 99, 235, 0.1)';
-            for (let i = 0; i < rows; i++) {
-                for (let j = 0; j < cols; j++) {
-                    if ((i + j) % 2 === 0) {
-                        ctx.fillRect(tableStartX + j * cellSize, tableStartY + i * cellSize, cellSize, cellSize);
+            generateCities(8); // Smaller for BF due to factorial complexity
+            state.bfPath = [];
+
+            const startTime = Date.now();
+            let bestPath = null;
+            let bestDistance = Infinity;
+            let pathsExplored = 0;
+            const exploringPaths = [];
+
+            document.getElementById('bf-status').textContent = 'Exploring...';
+
+            // Simplified brute force - test some random permutations
+            for (let attempt = 0; attempt < 500; attempt++) {
+                const indices = Array.from(state.cities.keys());
+                // Fisher-Yates shuffle
+                for (let i = indices.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [indices[i], indices[j]] = [indices[j], indices[i]];
+                }
+
+                let pathDistance = 0;
+                const path = [];
+
+                for (let i = 0; i < indices.length; i++) {
+                    path.push(state.cities[indices[i]]);
+                    if (i > 0) {
+                        pathDistance += distance(state.cities[indices[i - 1]], state.cities[indices[i]]);
                     }
                 }
+                pathDistance += distance(state.cities[indices[indices.length - 1]], state.cities[indices[0]]);
+
+                exploringPaths.push(path);
+                if (exploringPaths.length > 5) exploringPaths.shift();
+
+                if (pathDistance < bestDistance) {
+                    bestDistance = pathDistance;
+                    bestPath = path;
+                    state.bfPath = path;
+                }
+
+                pathsExplored++;
+
+                if (attempt % 50 === 0) {
+                    drawMap(canvas, bestPath || [], state.cities, -1, exploringPaths);
+                    document.getElementById('bf-distance').textContent = Math.round(bestDistance);
+                    document.getElementById('bf-paths').textContent = pathsExplored;
+                    await new Promise(r => setTimeout(r, 100));
+                }
             }
-            
-            // Add values
-            ctx.fillStyle = '#2563eb';
-            ctx.font = 'bold 12px Segoe UI';
-            const values = ['S', '∅', '{1}', '{2}', '{1,2}', '{3}', '{1,3}', '{2,3}'];
-            for (let j = 0; j < cols; j++) {
-                ctx.fillText(values[j], tableStartX + j * cellSize + 8, tableStartY + cellSize - 8);
-            }
-            
-            ctx.fillStyle = '#059669';
-            ctx.font = '12px Segoe UI';
-            ctx.fillText('Computed subsets', tableStartX, tableStartY + rows * cellSize + 30);
-            ctx.fillText('O(n²2ⁿ) - Better scalability', tableStartX, tableStartY + rows * cellSize + 50);
+
+            const elapsed = Date.now() - startTime;
+            drawMap(canvas, state.bfPath, state.cities);
+
+            document.getElementById('bf-distance').textContent = Math.round(bestDistance);
+            document.getElementById('bf-time').textContent = elapsed + 'ms';
+            document.getElementById('bf-paths').textContent = pathsExplored;
+            document.getElementById('bf-status').textContent = 'Complete!';
+
+            state.isAnimating = false;
         }
-        
-        // Complexity Comparison Chart
-        function drawComplexityChart() {
-            const canvas = document.getElementById('complexityChart');
-            const ctx = canvas.getContext('2d');
-            const width = canvas.width;
-            const height = canvas.height;
-            
-            ctx.fillStyle = '#f8fafc';
-            ctx.fillRect(0, 0, width, height);
-            
-            // Title
-            ctx.fillStyle = '#2563eb';
-            ctx.font = 'bold 16px Segoe UI';
-            ctx.fillText('Algorithm Complexity Growth (Higher = Worse)', 20, 30);
-            
-            // Draw axes
-            ctx.strokeStyle = '#334155';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(60, 40);
-            ctx.lineTo(60, 350);
-            ctx.lineTo(750, 350);
-            ctx.stroke();
-            
-            // Axis labels
-            ctx.fillStyle = '#666';
-            ctx.font = '12px Segoe UI';
-            ctx.fillText('Input Size (n)', 350, 380);
-            ctx.save();
-            ctx.translate(15, 200);
-            ctx.rotate(-Math.PI / 2);
-            ctx.fillText('Time Complexity', 0, 0);
-            ctx.restore();
-            
-            // Draw data points and lines
-            const n_values = [2, 4, 6, 8, 10];
-            const nn_values = [];
-            const hk_values = [];
-            const bf_values = [];
-            
-            n_values.forEach(n => {
-                nn_values.push(n * n);
-                hk_values.push(n * n * Math.pow(2, n) / 10);
-                bf_values.push(Math.factorial(n) / 100);
-            });
-            
-            // Helper to draw line
-            function drawLine(values, color, label) {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                
-                values.forEach((v, i) => {
-                    const x = 100 + i * 130;
-                    const y = 350 - Math.min(v / 20, 300);
-                    
-                    if (i === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
-                });
-                ctx.stroke();
-                
-                // Draw points
-                ctx.fillStyle = color;
-                values.forEach((v, i) => {
-                    const x = 100 + i * 130;
-                    const y = 350 - Math.min(v / 20, 300);
-                    ctx.beginPath();
-                    ctx.arc(x, y, 4, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-            }
-            
-            // Draw NN (O(n²))
-            drawLine(nn_values, '#10b981', 'NN: O(n²)');
-            
-            // Draw HK (O(n²2^n))
-            drawLine(hk_values, '#f59e0b', 'HK: O(n²2ⁿ)');
-            
-            // Draw BF (O(n!))
-            drawLine(bf_values, '#ef4444', 'BF: O(n!)');
-            
-            // Legend
-            const legendX = 470;
-            const legendY = 60;
-            const legendSpacing = 40;
-            
-            const legends = [
-                { color: '#10b981', text: 'NN: O(n²) - Best' },
-                { color: '#f59e0b', text: 'HK: O(n²2ⁿ) - Good' },
-                { color: '#ef4444', text: 'BF: O(n!) - Poor' }
-            ];
-            
-            legends.forEach((leg, i) => {
-                ctx.fillStyle = leg.color;
-                ctx.fillRect(legendX, legendY + i * legendSpacing, 12, 12);
-                ctx.fillStyle = '#666';
-                ctx.font = '11px Segoe UI';
-                ctx.fillText(leg.text, legendX + 20, legendY + 10 + i * legendSpacing);
-            });
+
+        function resetBF() {
+            const canvas = document.getElementById('bfCanvas');
+            state.bfPath = [];
+            generateCities(8);
+            drawMap(canvas, [], state.cities);
+            document.getElementById('bf-distance').textContent = '0';
+            document.getElementById('bf-time').textContent = '0ms';
+            document.getElementById('bf-paths').textContent = '0';
+            document.getElementById('bf-status').textContent = 'Ready';
         }
-        
-        // Factorial helper
-        Math.factorial = function(n) {
-            if (n <= 1) return 1;
-            return n * Math.factorial(n - 1);
-        };
-        
-        // Draw all visualizations when page loads
+
+        // Held-Karp Animation
+        async function animateHeldKarp() {
+            if (state.isAnimating) return;
+            state.isAnimating = true;
+
+            const canvas = document.getElementById('hkCanvas');
+            generateCities(10);
+            state.hkPath = [];
+
+            const startTime = Date.now();
+            let subsetsComputed = 0;
+            
+            document.getElementById('hk-status').textContent = 'Computing DP...';
+
+            // Simulate DP approach by building path incrementally
+            const buildPath = [];
+            const visited = new Set([0]);
+            buildPath.push(state.cities[0]);
+
+            // Greedy selection based on DP concept
+            let current = state.cities[0];
+            let totalDistance = 0;
+
+            while (visited.size < state.cities.length) {
+                let best = null;
+                let bestDist = Infinity;
+                let bestGain = Infinity;
+
+                for (let i = 0; i < state.cities.length; i++) {
+                    if (!visited.has(i)) {
+                        const d1 = distance(current, state.cities[i]);
+                        const d2 = distance(state.cities[i], state.cities[0]);
+                        const totalCost = d1 + d2;
+
+                        if (totalCost < bestGain) {
+                            bestGain = totalCost;
+                            best = i;
+                            bestDist = d1;
+                        }
+                    }
+                }
+
+                visited.add(best);
+                current = state.cities[best];
+                buildPath.push(current);
+                totalDistance += bestDist;
+                subsetsComputed += visited.size;
+
+                drawMap(canvas, buildPath, state.cities, best);
+                document.getElementById('hk-distance').textContent = Math.round(totalDistance);
+                document.getElementById('hk-subsets').textContent = subsetsComputed;
+
+                await new Promise(r => setTimeout(r, 200));
+            }
+
+            totalDistance += distance(buildPath[buildPath.length - 1], buildPath[0]);
+            state.hkPath = buildPath;
+
+            const elapsed = Date.now() - startTime;
+
+            document.getElementById('hk-distance').textContent = Math.round(totalDistance);
+            document.getElementById('hk-time').textContent = elapsed + 'ms';
+            document.getElementById('hk-status').textContent = 'Optimal!';
+
+            drawMap(canvas, state.hkPath, state.cities);
+            state.isAnimating = false;
+        }
+
+        function resetHK() {
+            const canvas = document.getElementById('hkCanvas');
+            state.hkPath = [];
+            generateCities(10);
+            drawMap(canvas, [], state.cities);
+            document.getElementById('hk-distance').textContent = '0';
+            document.getElementById('hk-time').textContent = '0ms';
+            document.getElementById('hk-subsets').textContent = '0';
+            document.getElementById('hk-status').textContent = 'Ready';
+        }
+
+        // Initialize on page load
         window.addEventListener('load', () => {
-            try {
-                drawNearestNeighbor();
-                drawBruteForce();
-                drawHeldKarp();
-                drawComplexityChart();
-            } catch (e) {
-                console.log('Canvas visualization loaded');
+            generateCities(12);
+            
+            const nnCanvas = document.getElementById('nnCanvas');
+            const bfCanvas = document.getElementById('bfCanvas');
+            const hkCanvas = document.getElementById('hkCanvas');
+
+            if (nnCanvas) drawMap(nnCanvas, [], state.cities);
+            if (bfCanvas) {
+                generateCities(8);
+                drawMap(bfCanvas, [], state.cities);
+                generateCities(12); // Reset for NN
+            }
+            if (hkCanvas) {
+                generateCities(10);
+                drawMap(hkCanvas, [], state.cities);
+                generateCities(12); // Reset for NN
             }
         });
     </script>
