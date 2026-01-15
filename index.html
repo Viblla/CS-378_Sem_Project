@@ -448,6 +448,9 @@
             <div class="algorithm-item">
                 <h4>1. Nearest Neighbor (NN)</h4>
                 <p>Greedy heuristic that selects the closest unvisited city at each step. Fast but may not be optimal.</p>
+                <div style="margin-top: 20px;">
+                    <canvas id="nnCanvas" width="500" height="200" style="max-width: 100%; border-radius: 8px; background: white; display: block; margin: 0 auto;"></canvas>
+                </div>
                 <div class="complexity">
                     <div class="complexity-item"><strong>Time:</strong> O(n²)</div>
                     <div class="complexity-item"><strong>Space:</strong> O(n)</div>
@@ -457,6 +460,9 @@
             <div class="algorithm-item">
                 <h4>2. Brute Force</h4>
                 <p>Exhaustively examines all possible permutations to guarantee the optimal solution.</p>
+                <div style="margin-top: 20px;">
+                    <canvas id="bfCanvas" width="500" height="200" style="max-width: 100%; border-radius: 8px; background: white; display: block; margin: 0 auto;"></canvas>
+                </div>
                 <div class="complexity">
                     <div class="complexity-item"><strong>Time:</strong> O(n!)</div>
                     <div class="complexity-item"><strong>Space:</strong> O(n!)</div>
@@ -466,11 +472,22 @@
             <div class="algorithm-item">
                 <h4>3. Held-Karp (Dynamic Programming)</h4>
                 <p>Optimal algorithm using dynamic programming with better scalability than brute force.</p>
+                <div style="margin-top: 20px;">
+                    <canvas id="hkCanvas" width="500" height="200" style="max-width: 100%; border-radius: 8px; background: white; display: block; margin: 0 auto;"></canvas>
+                </div>
                 <div class="complexity">
                     <div class="complexity-item"><strong>Time:</strong> O(n²2^n)</div>
                     <div class="complexity-item"><strong>Space:</strong> O(n2^n)</div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- Algorithm Visualization Section -->
+    <section style="background: white; padding: 80px 20px;">
+        <div class="container" style="max-width: 1000px;">
+            <h2 class="section-title">Complexity Comparison</h2>
+            <canvas id="complexityChart" width="800" height="400" style="max-width: 100%; margin-top: 40px;"></canvas>
         </div>
     </section>
 
@@ -566,5 +583,334 @@ pip install -r requirements.txt</div>
             <p style="margin-top: 20px; color: #64748b; font-size: 0.9em;">Built with Python, Pandas, Matplotlib | Last Updated January 2026</p>
         </div>
     </footer>
+
+    <script>
+        // Nearest Neighbor Visualization
+        function drawNearestNeighbor() {
+            const canvas = document.getElementById('nnCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            // Clear canvas
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Draw title
+            ctx.fillStyle = '#2563eb';
+            ctx.font = 'bold 14px Segoe UI';
+            ctx.fillText('Greedy: Always pick the nearest unvisited city', 10, 25);
+            
+            // Generate random cities
+            const cities = [];
+            for (let i = 0; i < 6; i++) {
+                cities.push({
+                    x: 50 + Math.random() * 400,
+                    y: 50 + Math.random() * 120
+                });
+            }
+            
+            // Simulate nearest neighbor path
+            let current = cities[0];
+            const visited = [0];
+            const path = [current];
+            
+            for (let i = 1; i < cities.length; i++) {
+                let nearest = -1;
+                let minDist = Infinity;
+                
+                for (let j = 0; j < cities.length; j++) {
+                    if (!visited.includes(j)) {
+                        const dist = Math.hypot(cities[j].x - current.x, cities[j].y - current.y);
+                        if (dist < minDist) {
+                            minDist = dist;
+                            nearest = j;
+                        }
+                    }
+                }
+                
+                visited.push(nearest);
+                current = cities[nearest];
+                path.push(current);
+            }
+            
+            // Draw paths
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < path.length; i++) {
+                if (i === 0) ctx.moveTo(path[i].x, path[i].y);
+                else ctx.lineTo(path[i].x, path[i].y);
+            }
+            ctx.lineTo(path[0].x, path[0].y);
+            ctx.stroke();
+            
+            // Draw cities
+            cities.forEach((city, i) => {
+                ctx.fillStyle = i === 0 ? '#10b981' : '#3b82f6';
+                ctx.beginPath();
+                ctx.arc(city.x, city.y, 6, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            // Draw legend
+            ctx.fillStyle = '#10b981';
+            ctx.beginPath();
+            ctx.arc(420, 160, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#666';
+            ctx.font = '12px Segoe UI';
+            ctx.fillText('Start', 430, 165);
+        }
+        
+        // Brute Force Visualization
+        function drawBruteForce() {
+            const canvas = document.getElementById('bfCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.fillStyle = '#2563eb';
+            ctx.font = 'bold 14px Segoe UI';
+            ctx.fillText('Exhaustive: Test all possible permutations (n!)', 10, 25);
+            
+            // Draw tree structure showing permutation search
+            const treeY = 50;
+            const branchSpacing = 60;
+            
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1;
+            
+            // Root
+            ctx.fillStyle = '#059669';
+            ctx.beginPath();
+            ctx.arc(250, treeY, 8, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Level 1 branches
+            const level1Positions = [150, 250, 350];
+            level1Positions.forEach(x => {
+                ctx.beginPath();
+                ctx.moveTo(250, treeY + 8);
+                ctx.lineTo(x, treeY + branchSpacing - 8);
+                ctx.stroke();
+                
+                ctx.fillStyle = '#3b82f6';
+                ctx.beginPath();
+                ctx.arc(x, treeY + branchSpacing, 6, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            // Level 2 branches
+            level1Positions.forEach(x => {
+                const y = treeY + branchSpacing;
+                const nextPositions = [x - 40, x + 40];
+                
+                nextPositions.forEach((nextX, idx) => {
+                    if (nextX > 50 && nextX < 450) {
+                        ctx.strokeStyle = '#cbd5e1';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(x, y + 6);
+                        ctx.lineTo(nextX, y + branchSpacing - 6);
+                        ctx.stroke();
+                        
+                        ctx.fillStyle = '#f59e0b';
+                        ctx.beginPath();
+                        ctx.arc(nextX, y + branchSpacing, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                });
+            });
+            
+            ctx.fillStyle = '#666';
+            ctx.font = '12px Segoe UI';
+            ctx.fillText('Explores n! paths', 180, 185);
+        }
+        
+        // Held-Karp Visualization
+        function drawHeldKarp() {
+            const canvas = document.getElementById('hkCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.fillStyle = '#2563eb';
+            ctx.font = 'bold 14px Segoe UI';
+            ctx.fillText('Dynamic Programming: Optimal substructure with memoization', 10, 25);
+            
+            // Draw DP table visualization
+            const tableStartX = 50;
+            const tableStartY = 50;
+            const cellSize = 40;
+            const cols = 8;
+            const rows = 3;
+            
+            // Draw grid
+            ctx.strokeStyle = '#e5e7eb';
+            ctx.lineWidth = 1;
+            
+            for (let i = 0; i <= rows; i++) {
+                ctx.beginPath();
+                ctx.moveTo(tableStartX, tableStartY + i * cellSize);
+                ctx.lineTo(tableStartX + cols * cellSize, tableStartY + i * cellSize);
+                ctx.stroke();
+            }
+            
+            for (let j = 0; j <= cols; j++) {
+                ctx.beginPath();
+                ctx.moveTo(tableStartX + j * cellSize, tableStartY);
+                ctx.lineTo(tableStartX + j * cellSize, tableStartY + rows * cellSize);
+                ctx.stroke();
+            }
+            
+            // Fill some cells with gradient effect
+            ctx.fillStyle = 'rgba(37, 99, 235, 0.1)';
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    if ((i + j) % 2 === 0) {
+                        ctx.fillRect(tableStartX + j * cellSize, tableStartY + i * cellSize, cellSize, cellSize);
+                    }
+                }
+            }
+            
+            // Add values
+            ctx.fillStyle = '#2563eb';
+            ctx.font = 'bold 12px Segoe UI';
+            const values = ['S', '∅', '{1}', '{2}', '{1,2}', '{3}', '{1,3}', '{2,3}'];
+            for (let j = 0; j < cols; j++) {
+                ctx.fillText(values[j], tableStartX + j * cellSize + 8, tableStartY + cellSize - 8);
+            }
+            
+            ctx.fillStyle = '#059669';
+            ctx.font = '12px Segoe UI';
+            ctx.fillText('Computed subsets', tableStartX, tableStartY + rows * cellSize + 30);
+            ctx.fillText('O(n²2ⁿ) - Better scalability', tableStartX, tableStartY + rows * cellSize + 50);
+        }
+        
+        // Complexity Comparison Chart
+        function drawComplexityChart() {
+            const canvas = document.getElementById('complexityChart');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Title
+            ctx.fillStyle = '#2563eb';
+            ctx.font = 'bold 16px Segoe UI';
+            ctx.fillText('Algorithm Complexity Growth (Higher = Worse)', 20, 30);
+            
+            // Draw axes
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(60, 40);
+            ctx.lineTo(60, 350);
+            ctx.lineTo(750, 350);
+            ctx.stroke();
+            
+            // Axis labels
+            ctx.fillStyle = '#666';
+            ctx.font = '12px Segoe UI';
+            ctx.fillText('Input Size (n)', 350, 380);
+            ctx.save();
+            ctx.translate(15, 200);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Time Complexity', 0, 0);
+            ctx.restore();
+            
+            // Draw data points and lines
+            const n_values = [2, 4, 6, 8, 10];
+            const nn_values = [];
+            const hk_values = [];
+            const bf_values = [];
+            
+            n_values.forEach(n => {
+                nn_values.push(n * n);
+                hk_values.push(n * n * Math.pow(2, n) / 10);
+                bf_values.push(Math.factorial(n) / 100);
+            });
+            
+            // Helper to draw line
+            function drawLine(values, color, label) {
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                
+                values.forEach((v, i) => {
+                    const x = 100 + i * 130;
+                    const y = 350 - Math.min(v / 20, 300);
+                    
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                });
+                ctx.stroke();
+                
+                // Draw points
+                ctx.fillStyle = color;
+                values.forEach((v, i) => {
+                    const x = 100 + i * 130;
+                    const y = 350 - Math.min(v / 20, 300);
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+            
+            // Draw NN (O(n²))
+            drawLine(nn_values, '#10b981', 'NN: O(n²)');
+            
+            // Draw HK (O(n²2^n))
+            drawLine(hk_values, '#f59e0b', 'HK: O(n²2ⁿ)');
+            
+            // Draw BF (O(n!))
+            drawLine(bf_values, '#ef4444', 'BF: O(n!)');
+            
+            // Legend
+            const legendX = 470;
+            const legendY = 60;
+            const legendSpacing = 40;
+            
+            const legends = [
+                { color: '#10b981', text: 'NN: O(n²) - Best' },
+                { color: '#f59e0b', text: 'HK: O(n²2ⁿ) - Good' },
+                { color: '#ef4444', text: 'BF: O(n!) - Poor' }
+            ];
+            
+            legends.forEach((leg, i) => {
+                ctx.fillStyle = leg.color;
+                ctx.fillRect(legendX, legendY + i * legendSpacing, 12, 12);
+                ctx.fillStyle = '#666';
+                ctx.font = '11px Segoe UI';
+                ctx.fillText(leg.text, legendX + 20, legendY + 10 + i * legendSpacing);
+            });
+        }
+        
+        // Factorial helper
+        Math.factorial = function(n) {
+            if (n <= 1) return 1;
+            return n * Math.factorial(n - 1);
+        };
+        
+        // Draw all visualizations when page loads
+        window.addEventListener('load', () => {
+            try {
+                drawNearestNeighbor();
+                drawBruteForce();
+                drawHeldKarp();
+                drawComplexityChart();
+            } catch (e) {
+                console.log('Canvas visualization loaded');
+            }
+        });
+    </script>
 </body>
 </html>
