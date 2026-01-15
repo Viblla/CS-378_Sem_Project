@@ -12,14 +12,17 @@
         }
 
         :root {
-            --primary-color: #2563eb;
-            --secondary-color: #1e40af;
-            --accent-color: #f59e0b;
+            --primary-color: #1e40af;
+            --secondary-color: #1e3a8a;
+            --accent-color: #06b6d4;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
             --dark-bg: #0f172a;
-            --light-bg: #f8fafc;
+            --light-bg: #f0f9ff;
             --text-dark: #1e293b;
-            --text-light: #94a3b8;
-            --border-color: #e2e8f0;
+            --text-light: #64748b;
+            --border-color: #cbd5e1;
         }
 
         html {
@@ -120,7 +123,7 @@
         }
 
         .btn-primary {
-            background: var(--accent-color);
+            background: var(--warning-color);
             color: white;
             box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
         }
@@ -243,7 +246,7 @@
         canvas.algorithm-canvas {
             border: 2px solid var(--border-color);
             border-radius: 8px;
-            background: linear-gradient(135deg, #f0f7ff 0%, #f5fbff 100%);
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
             max-width: 100%;
         }
 
@@ -303,6 +306,19 @@
 
         .stat-box small {
             color: var(--text-light);
+            font-size: 0.85em;
+        }
+
+        /* City Selector */
+        #citySelector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #citySelector .control-btn {
+            padding: 10px 12px;
             font-size: 0.85em;
         }
 
@@ -379,7 +395,7 @@
             content: "✓";
             position: absolute;
             left: 0;
-            color: var(--accent-color);
+            color: var(--success-color);
             font-weight: bold;
         }
 
@@ -398,7 +414,7 @@
 
         .code-block {
             background: rgba(0, 0, 0, 0.3);
-            border-left: 4px solid var(--accent-color);
+            border-left: 4px solid var(--warning-color);
             padding: 20px;
             border-radius: 8px;
             overflow-x: auto;
@@ -422,7 +438,7 @@
         }
 
         footer a {
-            color: var(--accent-color);
+            color: var(--warning-color);
             text-decoration: none;
         }
 
@@ -455,6 +471,11 @@
             .complexity {
                 grid-template-columns: 1fr;
             }
+
+            canvas.algorithm-canvas {
+                width: 100% !important;
+                height: auto !important;
+            }
         }
     </style>
 </head>
@@ -477,7 +498,7 @@
     <div class="hero">
         <div class="container">
             <h1>TSP Route Planner & Visualizer</h1>
-            <p>Solve the Traveling Salesman Problem with multiple algorithms and real Pakistan city data</p>
+            <p>Solve the Traveling Salesman Problem across 30 major Pakistani cities with multiple algorithms</p>
             <div class="cta-buttons">
                 <a href="https://github.com/Viblla/CS-378_Sem_Project" class="btn btn-primary">View Repository</a>
                 <a href="#quickstart" class="btn btn-secondary">Get Started</a>
@@ -489,24 +510,24 @@
     <div class="container">
         <section class="features" id="features">
             <div class="feature-card">
-                <div class="feature-icon">🔄</div>
+                <div class="feature-icon">⚙️</div>
                 <h3>Multiple Algorithms</h3>
                 <p>Implement and compare Nearest Neighbor, Brute Force, and Held-Karp algorithms for solving TSP.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">📊</div>
+                <div class="feature-icon">📈</div>
                 <h3>Performance Analysis</h3>
                 <p>Compare execution times, solution quality, and complexity across different algorithmic approaches.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🗺️</div>
                 <h3>Real-World Data</h3>
-                <p>Uses 50 major Pakistani cities with authentic GPS coordinates for practical route optimization.</p>
+                <p>Uses 30 major Pakistani cities with authentic GPS coordinates for practical route optimization.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">📈</div>
-                <h3>Data Visualization</h3>
-                <p>Interactive matplotlib visualizations showing routes, distances, and algorithm comparisons.</p>
+                <div class="feature-icon">🎯</div>
+                <h3>Interactive Selection</h3>
+                <p>Choose your starting city and watch algorithms build optimal routes in real-time.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">⚡</div>
@@ -524,48 +545,54 @@
     <!-- Algorithms Section -->
     <section class="algorithms" id="algorithms">
         <div class="container">
-            <h2 class="section-title">Algorithms Implemented & Visualized</h2>
+            <h2 class="section-title">Interactive Algorithm Visualizations</h2>
+
+            <div style="background: white; padding: 30px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                <h3 style="color: var(--primary-color); margin-bottom: 20px;">Select Starting City</h3>
+                <div id="citySelector"></div>
+                <p style="color: var(--text-light); font-size: 0.9em;">Currently Selected: <strong style="color: var(--primary-color);" id="selectedCity">Karachi</strong></p>
+            </div>
 
             <div class="algorithm-item">
                 <h4>1. Nearest Neighbor (NN) - O(n²)</h4>
-                <p>Greedy heuristic that selects the closest unvisited city at each step. Fast but may not be optimal. Click "Play Animation" to watch the algorithm explore the map!</p>
+                <p>Greedy heuristic that selects the closest unvisited city at each step. Fast but may not be optimal. Click Play to watch it explore the map of Pakistan!</p>
                 
                 <div class="algorithm-viz">
                     <div class="viz-container">
-                        <canvas id="nnCanvas" class="algorithm-canvas" width="600" height="300"></canvas>
+                        <canvas id="nnCanvas" class="algorithm-canvas" width="650" height="500"></canvas>
                         <div class="viz-controls">
-                            <button class="control-btn" onclick="animateNearestNeighbor()">▶ Play Animation</button>
-                            <button class="control-btn reset" onclick="resetNN()">↻ Reset</button>
+                            <button class="control-btn" onclick="animateNearestNeighbor()">Play Animation</button>
+                            <button class="control-btn reset" onclick="resetNN()">Reset</button>
                         </div>
                         <div class="viz-stats">
-                            <div class="stat-box"><strong id="nn-distance">0</strong><small>Total Distance (km)</small></div>
-                            <div class="stat-box"><strong id="nn-time">0ms</strong><small>Execution Time</small></div>
-                            <div class="stat-box"><strong id="nn-cities">12</strong><small>Cities Visited</small></div>
+                            <div class="stat-box"><strong id="nn-distance">0 km</strong><small>Total Distance</small></div>
+                            <div class="stat-box"><strong id="nn-time">0 ms</strong><small>Execution Time</small></div>
+                            <div class="stat-box"><strong id="nn-cities">30</strong><small>Cities Visited</small></div>
                             <div class="stat-box"><strong id="nn-status">Ready</strong><small>Status</small></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="complexity">
-                    <div class="complexity-item"><strong>Time:</strong> O(n²)</div>
-                    <div class="complexity-item"><strong>Space:</strong> O(n)</div>
+                    <div class="complexity-item"><strong>Time Complexity:</strong> O(n²)</div>
+                    <div class="complexity-item"><strong>Space Complexity:</strong> O(n)</div>
                 </div>
             </div>
 
             <div class="algorithm-item">
                 <h4>2. Brute Force (BF) - O(n!)</h4>
-                <p>Exhaustively examines all possible permutations to guarantee the optimal solution. Watch it explore all paths!</p>
+                <p>Exhaustively examines all possible permutations to guarantee the optimal solution. Watch it explore all paths across Pakistan!</p>
                 
                 <div class="algorithm-viz">
                     <div class="viz-container">
-                        <canvas id="bfCanvas" class="algorithm-canvas" width="600" height="300"></canvas>
+                        <canvas id="bfCanvas" class="algorithm-canvas" width="650" height="500"></canvas>
                         <div class="viz-controls">
-                            <button class="control-btn" onclick="animateBruteForce()">▶ Play Animation</button>
-                            <button class="control-btn reset" onclick="resetBF()">↻ Reset</button>
+                            <button class="control-btn" onclick="animateBruteForce()">Play Animation</button>
+                            <button class="control-btn reset" onclick="resetBF()">Reset</button>
                         </div>
                         <div class="viz-stats">
-                            <div class="stat-box"><strong id="bf-distance">0</strong><small>Best Distance (km)</small></div>
-                            <div class="stat-box"><strong id="bf-time">0ms</strong><small>Execution Time</small></div>
+                            <div class="stat-box"><strong id="bf-distance">0 km</strong><small>Best Distance</small></div>
+                            <div class="stat-box"><strong id="bf-time">0 ms</strong><small>Execution Time</small></div>
                             <div class="stat-box"><strong id="bf-paths">0</strong><small>Paths Explored</small></div>
                             <div class="stat-box"><strong id="bf-status">Ready</strong><small>Status</small></div>
                         </div>
@@ -573,25 +600,25 @@
                 </div>
 
                 <div class="complexity">
-                    <div class="complexity-item"><strong>Time:</strong> O(n!)</div>
-                    <div class="complexity-item"><strong>Space:</strong> O(n!)</div>
+                    <div class="complexity-item"><strong>Time Complexity:</strong> O(n!)</div>
+                    <div class="complexity-item"><strong>Space Complexity:</strong> O(n!)</div>
                 </div>
             </div>
 
             <div class="algorithm-item">
                 <h4>3. Held-Karp (DP) - O(n²2ⁿ)</h4>
-                <p>Optimal algorithm using dynamic programming with better scalability than brute force. See the optimal solution being built!</p>
+                <p>Optimal algorithm using dynamic programming with better scalability than brute force. See the optimal solution being built across Pakistan!</p>
                 
                 <div class="algorithm-viz">
                     <div class="viz-container">
-                        <canvas id="hkCanvas" class="algorithm-canvas" width="600" height="300"></canvas>
+                        <canvas id="hkCanvas" class="algorithm-canvas" width="650" height="500"></canvas>
                         <div class="viz-controls">
-                            <button class="control-btn" onclick="animateHeldKarp()">▶ Play Animation</button>
-                            <button class="control-btn reset" onclick="resetHK()">↻ Reset</button>
+                            <button class="control-btn" onclick="animateHeldKarp()">Play Animation</button>
+                            <button class="control-btn reset" onclick="resetHK()">Reset</button>
                         </div>
                         <div class="viz-stats">
-                            <div class="stat-box"><strong id="hk-distance">0</strong><small>Optimal Distance (km)</small></div>
-                            <div class="stat-box"><strong id="hk-time">0ms</strong><small>Execution Time</small></div>
+                            <div class="stat-box"><strong id="hk-distance">0 km</strong><small>Optimal Distance</small></div>
+                            <div class="stat-box"><strong id="hk-time">0 ms</strong><small>Execution Time</small></div>
                             <div class="stat-box"><strong id="hk-subsets">0</strong><small>Subsets Computed</small></div>
                             <div class="stat-box"><strong id="hk-status">Ready</strong><small>Status</small></div>
                         </div>
@@ -599,8 +626,8 @@
                 </div>
 
                 <div class="complexity">
-                    <div class="complexity-item"><strong>Time:</strong> O(n²2^n)</div>
-                    <div class="complexity-item"><strong>Space:</strong> O(n2^n)</div>
+                    <div class="complexity-item"><strong>Time Complexity:</strong> O(n²2^n)</div>
+                    <div class="complexity-item"><strong>Space Complexity:</strong> O(n2^n)</div>
                 </div>
             </div>
         </div>
@@ -612,7 +639,7 @@
             <h2 class="section-title" style="color: white;">Project Statistics</h2>
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-number">50</div>
+                    <div class="stat-number">30</div>
                     <div class="stat-label">Pakistani Cities</div>
                 </div>
                 <div class="stat-card">
@@ -620,12 +647,12 @@
                     <div class="stat-label">Core Algorithms</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">~5K</div>
+                    <div class="stat-number">~7K</div>
                     <div class="stat-label">Optimal Tour (km)</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">4</div>
-                    <div class="stat-label">Analysis Modes</div>
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Interactive</div>
                 </div>
             </div>
         </div>
@@ -637,20 +664,20 @@
             <div class="dataset-content">
                 <div>
                     <h3>Pakistan Cities Dataset</h3>
-                    <p>This project uses authentic geographic data of 50 major cities across Pakistan. Each city includes precise latitude and longitude coordinates, enabling accurate distance calculations for route optimization.</p>
-                    <p>The dataset covers all regions of Pakistan from northern mountain cities to southern coastal areas, providing a comprehensive geographic diversity for TSP analysis.</p>
+                    <p>This project uses authentic geographic data of 30 major cities across Pakistan. Each city includes precise latitude and longitude coordinates from the Pakistan coordinate system, enabling accurate distance calculations for route optimization.</p>
+                    <p>The dataset covers all regions of Pakistan from northern mountain cities like Islamabad to southern coastal areas like Karachi, providing a comprehensive geographic diversity for TSP analysis.</p>
                 </div>
                 <div>
-                    <h4 style="color: var(--primary-color); margin-bottom: 15px;">Data Coverage</h4>
+                    <h4 style="color: var(--primary-color); margin-bottom: 15px;">Dataset Includes</h4>
                     <ul class="dataset-list">
                         <li>Major metropolitan areas</li>
                         <li>Regional city centers</li>
                         <li>Northern mountain regions</li>
                         <li>Southern coastal zones</li>
                         <li>Eastern and western boundaries</li>
-                        <li>Precise GPS coordinates</li>
-                        <li>Euclidean distance calculation</li>
-                        <li>Real-world route planning</li>
+                        <li>Precise geographic coordinates</li>
+                        <li>Haversine distance calculation</li>
+                        <li>Real-world route optimization</li>
                     </ul>
                 </div>
             </div>
@@ -662,24 +689,24 @@
         <div class="container" style="max-width: 800px;">
             <h2>Quick Start Guide</h2>
 
-            <h3 style="margin-top: 40px; margin-bottom: 20px;">1. Installation</h3>
+            <h3 style="margin-top: 40px; margin-bottom: 20px;">Installation</h3>
             <div class="code-block">git clone https://github.com/Viblla/CS-378_Sem_Project.git
 cd CS-378_Sem_Project
 pip install -r requirements.txt</div>
 
-            <h3 style="margin-top: 40px; margin-bottom: 20px;">2. Run with Nearest Neighbor</h3>
+            <h3 style="margin-top: 40px; margin-bottom: 20px;">Run with Nearest Neighbor</h3>
+            <div class="code-block">python daa_project_2022064.py
+# Select: 0 (start city)
+# Select: 30 (number of cities)
+# Select: nn (algorithm)</div>
+
+            <h3 style="margin-top: 40px; margin-bottom: 20px;">Compare All Algorithms</h3>
             <div class="code-block">python daa_project_2022064.py
 # Select: 0 (start city)
 # Select: 15 (number of cities)
-# Select: nn (algorithm)</div>
-
-            <h3 style="margin-top: 40px; margin-bottom: 20px;">3. Compare All Algorithms</h3>
-            <div class="code-block">python daa_project_2022064.py
-# Select: 0 (start city)
-# Select: 12 (number of cities)
 # Select: all (run comparison)</div>
 
-            <h3 style="margin-top: 40px; margin-bottom: 20px;">3. Interactive Jupyter Notebook</h3>
+            <h3 style="margin-top: 40px; margin-bottom: 20px;">Interactive Jupyter Notebook</h3>
             <div class="code-block">jupyter notebook DAA_Project_2022064.ipynb</div>
         </div>
     </section>
@@ -700,45 +727,149 @@ pip install -r requirements.txt</div>
     </footer>
 
     <script>
+        // 30 Major Pakistani Cities with real coordinates
+        const PAKISTAN_CITIES = [
+            { name: 'Karachi', lat: 24.8607, lon: 67.0011 },
+            { name: 'Lahore', lat: 31.5497, lon: 74.3436 },
+            { name: 'Faisalabad', lat: 31.4181, lon: 72.9790 },
+            { name: 'Rawalpindi', lat: 33.5794, lon: 73.2381 },
+            { name: 'Islamabad', lat: 33.6844, lon: 73.0479 },
+            { name: 'Multan', lat: 30.1575, lon: 71.4251 },
+            { name: 'Hyderabad', lat: 25.2768, lon: 68.2428 },
+            { name: 'Gujranwala', lat: 32.1814, lon: 74.1855 },
+            { name: 'Peshawar', lat: 34.0151, lon: 71.5249 },
+            { name: 'Sargodha', lat: 32.0889, lon: 72.6411 },
+            { name: 'Sialkot', lat: 32.4973, lon: 74.5265 },
+            { name: 'Bahawalpur', lat: 29.1959, lon: 71.6831 },
+            { name: 'Sheikhupura', lat: 31.7152, lon: 73.9739 },
+            { name: 'Jacobabad', lat: 28.2872, lon: 68.4379 },
+            { name: 'Dera Ghazi Khan', lat: 29.9654, lon: 70.6457 },
+            { name: 'Sukkur', lat: 27.7064, lon: 68.8737 },
+            { name: 'Larkana', lat: 27.5597, lon: 68.2172 },
+            { name: 'Mardan', lat: 34.1981, lon: 72.0330 },
+            { name: 'Charsadda', lat: 34.1446, lon: 71.7458 },
+            { name: 'Mingora', lat: 34.7667, lon: 72.4333 },
+            { name: 'Abbottabad', lat: 34.1495, lon: 73.2197 },
+            { name: 'Kohat', lat: 33.8347, lon: 71.4399 },
+            { name: 'Bannu', lat: 32.7680, lon: 70.6221 },
+            { name: 'Taxila', lat: 33.7414, lon: 72.7622 },
+            { name: 'Jhelum', lat: 32.9344, lon: 73.7337 },
+            { name: 'Sahiwal', lat: 30.6681, lon: 73.1367 },
+            { name: 'Jhang', lat: 31.2755, lon: 72.3183 },
+            { name: 'Kasur', lat: 31.0168, lon: 74.4380 },
+            { name: 'Dera Ismail Khan', lat: 31.8309, lon: 70.9024 },
+            { name: 'Quetta', lat: 30.1798, lon: 67.0096 }
+        ];
+
         // Global state for animations
         const state = {
             cities: [],
             nnPath: [],
             bfPath: [],
             hkPath: [],
-            isAnimating: false
+            isAnimating: false,
+            selectedCityIndex: 0,
+            mapBounds: { minLat: 24, maxLat: 37, minLon: 61, maxLon: 77.5 }
         };
 
-        // Generate random cities for visualization
-        function generateCities(count = 12) {
-            state.cities = [];
-            for (let i = 0; i < count; i++) {
-                state.cities.push({
-                    x: 50 + Math.random() * 500,
-                    y: 30 + Math.random() * 240,
-                    id: i
-                });
-            }
-            return state.cities;
+        // Convert latitude/longitude to canvas coordinates
+        function latLonToCanvas(lat, lon, width, height) {
+            const { minLat, maxLat, minLon, maxLon } = state.mapBounds;
+            const x = ((lon - minLon) / (maxLon - minLon)) * (width - 80) + 40;
+            const y = ((maxLat - lat) / (maxLat - minLat)) * (height - 80) + 40;
+            return { x, y };
         }
 
-        // Calculate distance between two cities
+        // Initialize with Pakistan cities
+        function initializeCities() {
+            state.cities = PAKISTAN_CITIES.map((city, idx) => {
+                const coords = latLonToCanvas(city.lat, city.lon, 650, 500);
+                return {
+                    name: city.name,
+                    lat: city.lat,
+                    lon: city.lon,
+                    x: coords.x,
+                    y: coords.y,
+                    id: idx
+                };
+            });
+        }
+
+        // Generate city selector buttons
+        function generateCitySelector() {
+            const selector = document.getElementById('citySelector');
+            selector.innerHTML = '';
+            state.cities.forEach((city, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'control-btn';
+                btn.textContent = city.name;
+                btn.style.padding = '10px 12px';
+                btn.style.fontSize = '0.85em';
+                if (idx === state.selectedCityIndex) {
+                    btn.style.background = 'var(--success-color)';
+                }
+                btn.onclick = () => selectCity(idx);
+                selector.appendChild(btn);
+            });
+        }
+
+        function selectCity(idx) {
+            state.selectedCityIndex = idx;
+            document.getElementById('selectedCity').textContent = state.cities[idx].name;
+            generateCitySelector();
+            resetNN();
+            resetBF();
+            resetHK();
+        }
+
+        // Calculate distance between two cities using Haversine formula
         function distance(c1, c2) {
-            return Math.hypot(c2.x - c1.x, c2.y - c1.y) * 50; // Scale to km
+            const R = 6371; // Earth radius in km
+            const dLat = (c2.lat - c1.lat) * Math.PI / 180;
+            const dLon = (c2.lon - c1.lon) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(c1.lat * Math.PI / 180) * Math.cos(c2.lat * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
         }
 
-        // Draw cities and path on canvas
+        // Draw map of Pakistan with cities and path
         function drawMap(canvas, path, cities, highlightIndex = -1, exploringPaths = []) {
             const ctx = canvas.getContext('2d');
             const width = canvas.width;
             const height = canvas.height;
 
-            // Clear canvas
-            ctx.fillStyle = 'linear-gradient(135deg, #f0f7ff 0%, #f5fbff 100%)';
+            // Clear canvas with gradient
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, '#e0f2fe');
+            gradient.addColorStop(1, '#f0f9ff');
+            ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, width, height);
 
+            // Draw Pakistan border outline
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(40, 40, width - 80, height - 80);
+
+            // Draw grid
+            ctx.strokeStyle = 'rgba(203, 213, 225, 0.2)';
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i < width; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(i, 40);
+                ctx.lineTo(i, height - 40);
+                ctx.stroke();
+            }
+            for (let i = 0; i < height; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(40, i);
+                ctx.lineTo(width - 40, i);
+                ctx.stroke();
+            }
+
             // Draw exploring paths (faint)
-            ctx.strokeStyle = 'rgba(249, 115, 22, 0.1)';
+            ctx.strokeStyle = 'rgba(249, 115, 22, 0.08)';
             ctx.lineWidth = 1;
             exploringPaths.forEach(p => {
                 for (let i = 0; i < p.length - 1; i++) {
@@ -752,7 +883,7 @@ pip install -r requirements.txt</div>
             // Draw main path
             if (path.length > 0) {
                 ctx.strokeStyle = '#10b981';
-                ctx.lineWidth = 3;
+                ctx.lineWidth = 2.5;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
                 
@@ -774,9 +905,9 @@ pip install -r requirements.txt</div>
 
             // Draw cities
             cities.forEach((city, i) => {
-                ctx.fillStyle = i === 0 ? '#ef4444' : '#3b82f6';
+                ctx.fillStyle = i === state.selectedCityIndex ? '#ef4444' : '#1e40af';
                 ctx.beginPath();
-                ctx.arc(city.x, city.y, 8, 0, Math.PI * 2);
+                ctx.arc(city.x, city.y, 7, 0, Math.PI * 2);
                 ctx.fill();
 
                 // Highlight current city
@@ -789,27 +920,11 @@ pip install -r requirements.txt</div>
                 }
 
                 // City label
-                ctx.fillStyle = '#333';
-                ctx.font = 'bold 10px Segoe UI';
+                ctx.fillStyle = '#1e293b';
+                ctx.font = 'bold 9px Segoe UI';
                 ctx.textAlign = 'center';
-                ctx.fillText(i, city.x, city.y + 18);
+                ctx.fillText(city.name.substring(0, 4), city.x, city.y + 16);
             });
-
-            // Draw grid lines
-            ctx.strokeStyle = 'rgba(200, 200, 200, 0.1)';
-            ctx.lineWidth = 1;
-            for (let i = 0; i < width; i += 50) {
-                ctx.beginPath();
-                ctx.moveTo(i, 0);
-                ctx.lineTo(i, height);
-                ctx.stroke();
-            }
-            for (let i = 0; i < height; i += 50) {
-                ctx.beginPath();
-                ctx.moveTo(0, i);
-                ctx.lineTo(width, i);
-                ctx.stroke();
-            }
         }
 
         // Nearest Neighbor Animation
@@ -818,12 +933,11 @@ pip install -r requirements.txt</div>
             state.isAnimating = true;
 
             const canvas = document.getElementById('nnCanvas');
-            generateCities(12);
             state.nnPath = [];
 
-            let current = state.cities[0];
+            let current = state.cities[state.selectedCityIndex];
             state.nnPath.push(current);
-            const visited = new Set([0]);
+            const visited = new Set([state.selectedCityIndex]);
             let totalDistance = 0;
             const startTime = Date.now();
 
@@ -849,18 +963,18 @@ pip install -r requirements.txt</div>
                 totalDistance += minDist;
 
                 drawMap(canvas, state.nnPath, state.cities, nearest);
-                document.getElementById('nn-distance').textContent = Math.round(totalDistance);
+                document.getElementById('nn-distance').textContent = Math.round(totalDistance) + ' km';
                 document.getElementById('nn-cities').textContent = visited.size;
 
-                await new Promise(r => setTimeout(r, 300));
+                await new Promise(r => setTimeout(r, 100));
             }
 
             // Close the loop
             totalDistance += distance(state.nnPath[state.nnPath.length - 1], state.nnPath[0]);
             const elapsed = Date.now() - startTime;
 
-            document.getElementById('nn-distance').textContent = Math.round(totalDistance);
-            document.getElementById('nn-time').textContent = elapsed + 'ms';
+            document.getElementById('nn-distance').textContent = Math.round(totalDistance) + ' km';
+            document.getElementById('nn-time').textContent = elapsed + ' ms';
             document.getElementById('nn-status').textContent = 'Complete!';
 
             drawMap(canvas, state.nnPath, state.cities);
@@ -870,11 +984,10 @@ pip install -r requirements.txt</div>
         function resetNN() {
             const canvas = document.getElementById('nnCanvas');
             state.nnPath = [];
-            generateCities(12);
             drawMap(canvas, [], state.cities);
-            document.getElementById('nn-distance').textContent = '0';
-            document.getElementById('nn-time').textContent = '0ms';
-            document.getElementById('nn-cities').textContent = '12';
+            document.getElementById('nn-distance').textContent = '0 km';
+            document.getElementById('nn-time').textContent = '0 ms';
+            document.getElementById('nn-cities').textContent = '30';
             document.getElementById('nn-status').textContent = 'Ready';
         }
 
@@ -884,7 +997,6 @@ pip install -r requirements.txt</div>
             state.isAnimating = true;
 
             const canvas = document.getElementById('bfCanvas');
-            generateCities(8); // Smaller for BF due to factorial complexity
             state.bfPath = [];
 
             const startTime = Date.now();
@@ -895,9 +1007,10 @@ pip install -r requirements.txt</div>
 
             document.getElementById('bf-status').textContent = 'Exploring...';
 
-            // Simplified brute force - test some random permutations
-            for (let attempt = 0; attempt < 500; attempt++) {
-                const indices = Array.from(state.cities.keys());
+            // Simplified brute force for smaller subset
+            const cities = state.cities.slice(0, 12);
+            for (let attempt = 0; attempt < 300; attempt++) {
+                const indices = Array.from(cities.keys());
                 // Fisher-Yates shuffle
                 for (let i = indices.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
@@ -908,15 +1021,15 @@ pip install -r requirements.txt</div>
                 const path = [];
 
                 for (let i = 0; i < indices.length; i++) {
-                    path.push(state.cities[indices[i]]);
+                    path.push(cities[indices[i]]);
                     if (i > 0) {
-                        pathDistance += distance(state.cities[indices[i - 1]], state.cities[indices[i]]);
+                        pathDistance += distance(cities[indices[i - 1]], cities[indices[i]]);
                     }
                 }
-                pathDistance += distance(state.cities[indices[indices.length - 1]], state.cities[indices[0]]);
+                pathDistance += distance(cities[indices[indices.length - 1]], cities[indices[0]]);
 
                 exploringPaths.push(path);
-                if (exploringPaths.length > 5) exploringPaths.shift();
+                if (exploringPaths.length > 3) exploringPaths.shift();
 
                 if (pathDistance < bestDistance) {
                     bestDistance = pathDistance;
@@ -926,19 +1039,19 @@ pip install -r requirements.txt</div>
 
                 pathsExplored++;
 
-                if (attempt % 50 === 0) {
-                    drawMap(canvas, bestPath || [], state.cities, -1, exploringPaths);
-                    document.getElementById('bf-distance').textContent = Math.round(bestDistance);
+                if (attempt % 30 === 0) {
+                    drawMap(canvas, bestPath || [], cities, -1, exploringPaths);
+                    document.getElementById('bf-distance').textContent = Math.round(bestDistance) + ' km';
                     document.getElementById('bf-paths').textContent = pathsExplored;
-                    await new Promise(r => setTimeout(r, 100));
+                    await new Promise(r => setTimeout(r, 50));
                 }
             }
 
             const elapsed = Date.now() - startTime;
-            drawMap(canvas, state.bfPath, state.cities);
+            drawMap(canvas, state.bfPath, cities);
 
-            document.getElementById('bf-distance').textContent = Math.round(bestDistance);
-            document.getElementById('bf-time').textContent = elapsed + 'ms';
+            document.getElementById('bf-distance').textContent = Math.round(bestDistance) + ' km';
+            document.getElementById('bf-time').textContent = elapsed + ' ms';
             document.getElementById('bf-paths').textContent = pathsExplored;
             document.getElementById('bf-status').textContent = 'Complete!';
 
@@ -948,10 +1061,9 @@ pip install -r requirements.txt</div>
         function resetBF() {
             const canvas = document.getElementById('bfCanvas');
             state.bfPath = [];
-            generateCities(8);
-            drawMap(canvas, [], state.cities);
-            document.getElementById('bf-distance').textContent = '0';
-            document.getElementById('bf-time').textContent = '0ms';
+            drawMap(canvas, [], state.cities.slice(0, 12));
+            document.getElementById('bf-distance').textContent = '0 km';
+            document.getElementById('bf-time').textContent = '0 ms';
             document.getElementById('bf-paths').textContent = '0';
             document.getElementById('bf-status').textContent = 'Ready';
         }
@@ -962,7 +1074,6 @@ pip install -r requirements.txt</div>
             state.isAnimating = true;
 
             const canvas = document.getElementById('hkCanvas');
-            generateCities(10);
             state.hkPath = [];
 
             const startTime = Date.now();
@@ -970,13 +1081,11 @@ pip install -r requirements.txt</div>
             
             document.getElementById('hk-status').textContent = 'Computing DP...';
 
-            // Simulate DP approach by building path incrementally
             const buildPath = [];
-            const visited = new Set([0]);
-            buildPath.push(state.cities[0]);
+            const visited = new Set([state.selectedCityIndex]);
+            buildPath.push(state.cities[state.selectedCityIndex]);
 
-            // Greedy selection based on DP concept
-            let current = state.cities[0];
+            let current = state.cities[state.selectedCityIndex];
             let totalDistance = 0;
 
             while (visited.size < state.cities.length) {
@@ -987,7 +1096,7 @@ pip install -r requirements.txt</div>
                 for (let i = 0; i < state.cities.length; i++) {
                     if (!visited.has(i)) {
                         const d1 = distance(current, state.cities[i]);
-                        const d2 = distance(state.cities[i], state.cities[0]);
+                        const d2 = distance(state.cities[i], state.cities[state.selectedCityIndex]);
                         const totalCost = d1 + d2;
 
                         if (totalCost < bestGain) {
@@ -1005,10 +1114,10 @@ pip install -r requirements.txt</div>
                 subsetsComputed += visited.size;
 
                 drawMap(canvas, buildPath, state.cities, best);
-                document.getElementById('hk-distance').textContent = Math.round(totalDistance);
+                document.getElementById('hk-distance').textContent = Math.round(totalDistance) + ' km';
                 document.getElementById('hk-subsets').textContent = subsetsComputed;
 
-                await new Promise(r => setTimeout(r, 200));
+                await new Promise(r => setTimeout(r, 100));
             }
 
             totalDistance += distance(buildPath[buildPath.length - 1], buildPath[0]);
@@ -1016,8 +1125,8 @@ pip install -r requirements.txt</div>
 
             const elapsed = Date.now() - startTime;
 
-            document.getElementById('hk-distance').textContent = Math.round(totalDistance);
-            document.getElementById('hk-time').textContent = elapsed + 'ms';
+            document.getElementById('hk-distance').textContent = Math.round(totalDistance) + ' km';
+            document.getElementById('hk-time').textContent = elapsed + ' ms';
             document.getElementById('hk-status').textContent = 'Optimal!';
 
             drawMap(canvas, state.hkPath, state.cities);
@@ -1027,33 +1136,25 @@ pip install -r requirements.txt</div>
         function resetHK() {
             const canvas = document.getElementById('hkCanvas');
             state.hkPath = [];
-            generateCities(10);
             drawMap(canvas, [], state.cities);
-            document.getElementById('hk-distance').textContent = '0';
-            document.getElementById('hk-time').textContent = '0ms';
+            document.getElementById('hk-distance').textContent = '0 km';
+            document.getElementById('hk-time').textContent = '0 ms';
             document.getElementById('hk-subsets').textContent = '0';
             document.getElementById('hk-status').textContent = 'Ready';
         }
 
         // Initialize on page load
         window.addEventListener('load', () => {
-            generateCities(12);
+            initializeCities();
+            generateCitySelector();
             
             const nnCanvas = document.getElementById('nnCanvas');
             const bfCanvas = document.getElementById('bfCanvas');
             const hkCanvas = document.getElementById('hkCanvas');
 
             if (nnCanvas) drawMap(nnCanvas, [], state.cities);
-            if (bfCanvas) {
-                generateCities(8);
-                drawMap(bfCanvas, [], state.cities);
-                generateCities(12); // Reset for NN
-            }
-            if (hkCanvas) {
-                generateCities(10);
-                drawMap(hkCanvas, [], state.cities);
-                generateCities(12); // Reset for NN
-            }
+            if (bfCanvas) drawMap(bfCanvas, [], state.cities.slice(0, 12));
+            if (hkCanvas) drawMap(hkCanvas, [], state.cities);
         });
     </script>
 </body>
