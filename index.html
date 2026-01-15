@@ -189,7 +189,7 @@
         }
 
         .algorithms .container {
-            max-width: 900px;
+            max-width: 1200px;
         }
 
         .section-title {
@@ -559,7 +559,7 @@
                 
                 <div class="algorithm-viz">
                     <div class="viz-container">
-                        <canvas id="nnCanvas" class="algorithm-canvas" width="650" height="500"></canvas>
+                        <canvas id="nnCanvas" class="algorithm-canvas" width="900" height="650"></canvas>
                         <div class="viz-controls">
                             <button class="control-btn" onclick="animateNearestNeighbor()">Play Animation</button>
                             <button class="control-btn reset" onclick="resetNN()">Reset</button>
@@ -585,7 +585,7 @@
                 
                 <div class="algorithm-viz">
                     <div class="viz-container">
-                        <canvas id="bfCanvas" class="algorithm-canvas" width="650" height="500"></canvas>
+                        <canvas id="bfCanvas" class="algorithm-canvas" width="900" height="650"></canvas>
                         <div class="viz-controls">
                             <button class="control-btn" onclick="animateBruteForce()">Play Animation</button>
                             <button class="control-btn reset" onclick="resetBF()">Reset</button>
@@ -611,7 +611,7 @@
                 
                 <div class="algorithm-viz">
                     <div class="viz-container">
-                        <canvas id="hkCanvas" class="algorithm-canvas" width="650" height="500"></canvas>
+                        <canvas id="hkCanvas" class="algorithm-canvas" width="900" height="650"></canvas>
                         <div class="viz-controls">
                             <button class="control-btn" onclick="animateHeldKarp()">Play Animation</button>
                             <button class="control-btn reset" onclick="resetHK()">Reset</button>
@@ -783,7 +783,7 @@ pip install -r requirements.txt</div>
         // Initialize with Pakistan cities
         function initializeCities() {
             state.cities = PAKISTAN_CITIES.map((city, idx) => {
-                const coords = latLonToCanvas(city.lat, city.lon, 650, 500);
+                const coords = latLonToCanvas(city.lat, city.lon, 900, 650);
                 return {
                     name: city.name,
                     lat: city.lat,
@@ -921,9 +921,9 @@ pip install -r requirements.txt</div>
 
                 // City label
                 ctx.fillStyle = '#1e293b';
-                ctx.font = 'bold 9px Segoe UI';
+                ctx.font = 'bold 10px Segoe UI';
                 ctx.textAlign = 'center';
-                ctx.fillText(city.name.substring(0, 4), city.x, city.y + 16);
+                ctx.fillText(city.name, city.x, city.y + 18);
             });
         }
 
