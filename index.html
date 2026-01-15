@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSP Route Planner - Design and Analysis of Algorithms</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #f59e0b;
+            --dark-bg: #0f172a;
+            --light-bg: #f8fafc;
+            --text-dark: #1e293b;
+            --text-light: #94a3b8;
+            --border-color: #e2e8f0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1e3a8a 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+            margin-top: 20px;
+            border-radius: 12px;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero p {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #f59e0b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-bg);
+            transform: translateY(-2px);
+        }
+
+        /* Features Section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 80px 20px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        /* Algorithms Section */
+        .algorithms {
+            background: white;
+            padding: 80px 20px;
+        }
+
+        .algorithms .container {
+            max-width: 900px;
+        }
+
+        .section-title {
+            font-size: 2.5em;
+            color: var(--primary-color);
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .algorithm-item {
+            background: var(--light-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+        }
+
+        .algorithm-item h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .complexity {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+            font-size: 0.95em;
+        }
+
+        .complexity-item {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Stats Section */
+        .stats {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        /* Dataset Section */
+        .dataset {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .dataset-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .dataset-content h3 {
+            font-size: 2em;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .dataset-content p {
+            color: var(--text-light);
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        .dataset-list {
+            list-style: none;
+        }
+
+        .dataset-list li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            color: var(--text-light);
+        }
+
+        .dataset-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        /* Quick Start */
+        .quickstart {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1e3a8a 100%);
+            color: white;
+            padding: 80px 20px;
+        }
+
+        .quickstart h2 {
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 2px solid var(--primary-color);
+        }
+
+        footer p {
+            margin-bottom: 10px;
+        }
+
+        footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2em;
+            }
+
+            nav ul {
+                gap: 15px;
+            }
+
+            .section-title {
+                font-size: 2em;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .dataset-content {
+                grid-template-columns: 1fr;
+            }
+
+            .complexity {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">TSP Route Planner</div>
+            <ul>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#algorithms">Algorithms</a></li>
+                <li><a href="#dataset">Dataset</a></li>
+                <li><a href="#quickstart">Quick Start</a></li>
+                <li><a href="https://github.com/Viblla/CS-378_Sem_Project">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="container">
+            <h1>TSP Route Planner & Visualizer</h1>
+            <p>Solve the Traveling Salesman Problem with multiple algorithms and real Pakistan city data</p>
+            <div class="cta-buttons">
+                <a href="https://github.com/Viblla/CS-378_Sem_Project" class="btn btn-primary">View Repository</a>
+                <a href="#quickstart" class="btn btn-secondary">Get Started</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="container">
+        <section class="features" id="features">
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3>Multiple Algorithms</h3>
+                <p>Implement and compare Nearest Neighbor, Brute Force, and Held-Karp algorithms for solving TSP.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Performance Analysis</h3>
+                <p>Compare execution times, solution quality, and complexity across different algorithmic approaches.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🗺️</div>
+                <h3>Real-World Data</h3>
+                <p>Uses 50 major Pakistani cities with authentic GPS coordinates for practical route optimization.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3>Data Visualization</h3>
+                <p>Interactive matplotlib visualizations showing routes, distances, and algorithm comparisons.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Fast Execution</h3>
+                <p>Optimized implementation with efficient distance calculations and memory management.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎓</div>
+                <h3>Educational Focus</h3>
+                <p>Well-documented code demonstrating algorithm design patterns and complexity analysis.</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Algorithms Section -->
+    <section class="algorithms" id="algorithms">
+        <div class="container">
+            <h2 class="section-title">Algorithms Implemented</h2>
+
+            <div class="algorithm-item">
+                <h4>1. Nearest Neighbor (NN)</h4>
+                <p>Greedy heuristic that selects the closest unvisited city at each step. Fast but may not be optimal.</p>
+                <div class="complexity">
+                    <div class="complexity-item"><strong>Time:</strong> O(n²)</div>
+                    <div class="complexity-item"><strong>Space:</strong> O(n)</div>
+                </div>
+            </div>
+
+            <div class="algorithm-item">
+                <h4>2. Brute Force</h4>
+                <p>Exhaustively examines all possible permutations to guarantee the optimal solution.</p>
+                <div class="complexity">
+                    <div class="complexity-item"><strong>Time:</strong> O(n!)</div>
+                    <div class="complexity-item"><strong>Space:</strong> O(n!)</div>
+                </div>
+            </div>
+
+            <div class="algorithm-item">
+                <h4>3. Held-Karp (Dynamic Programming)</h4>
+                <p>Optimal algorithm using dynamic programming with better scalability than brute force.</p>
+                <div class="complexity">
+                    <div class="complexity-item"><strong>Time:</strong> O(n²2^n)</div>
+                    <div class="complexity-item"><strong>Space:</strong> O(n2^n)</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <h2 class="section-title" style="color: white;">Project Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">50</div>
+                    <div class="stat-label">Pakistani Cities</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Core Algorithms</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">~5K</div>
+                    <div class="stat-label">Optimal Tour (km)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Analysis Modes</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dataset Section -->
+    <section class="dataset" id="dataset">
+        <div class="container">
+            <div class="dataset-content">
+                <div>
+                    <h3>Pakistan Cities Dataset</h3>
+                    <p>This project uses authentic geographic data of 50 major cities across Pakistan. Each city includes precise latitude and longitude coordinates, enabling accurate distance calculations for route optimization.</p>
+                    <p>The dataset covers all regions of Pakistan from northern mountain cities to southern coastal areas, providing a comprehensive geographic diversity for TSP analysis.</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--primary-color); margin-bottom: 15px;">Data Coverage</h4>
+                    <ul class="dataset-list">
+                        <li>Major metropolitan areas</li>
+                        <li>Regional city centers</li>
+                        <li>Northern mountain regions</li>
+                        <li>Southern coastal zones</li>
+                        <li>Eastern and western boundaries</li>
+                        <li>Precise GPS coordinates</li>
+                        <li>Euclidean distance calculation</li>
+                        <li>Real-world route planning</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Start Section -->
+    <section class="quickstart" id="quickstart">
+        <div class="container" style="max-width: 800px;">
+            <h2>Quick Start Guide</h2>
+
+            <h3 style="margin-top: 40px; margin-bottom: 20px;">1. Installation</h3>
+            <div class="code-block">git clone https://github.com/Viblla/CS-378_Sem_Project.git
+cd CS-378_Sem_Project
+pip install -r requirements.txt</div>
+
+            <h3 style="margin-top: 40px; margin-bottom: 20px;">2. Run with Nearest Neighbor</h3>
+            <div class="code-block">python daa_project_2022064.py
+# Select: 0 (start city)
+# Select: 15 (number of cities)
+# Select: nn (algorithm)</div>
+
+            <h3 style="margin-top: 40px; margin-bottom: 20px;">3. Compare All Algorithms</h3>
+            <div class="code-block">python daa_project_2022064.py
+# Select: 0 (start city)
+# Select: 12 (number of cities)
+# Select: all (run comparison)</div>
+
+            <h3 style="margin-top: 40px; margin-bottom: 20px;">3. Interactive Jupyter Notebook</h3>
+            <div class="code-block">jupyter notebook DAA_Project_2022064.ipynb</div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p><strong>TSP Route Planner & Visualizer</strong></p>
+            <p>Design and Analysis of Algorithms (CS-378) | GIKI | Semester 6</p>
+            <p>By Ahmed Bilal Nazim | Registration: 2022064</p>
+            <p style="margin-top: 20px; color: var(--text-light);">
+                <a href="https://github.com/Viblla/CS-378_Sem_Project">GitHub Repository</a> | 
+                <a href="README.md">Documentation</a> | 
+                <a href="https://github.com/Viblla/CS-378_Sem_Project/blob/main/LICENSE">License</a>
+            </p>
+            <p style="margin-top: 20px; color: #64748b; font-size: 0.9em;">Built with Python, Pandas, Matplotlib | Last Updated January 2026</p>
+        </div>
+    </footer>
+</body>
+</html>
